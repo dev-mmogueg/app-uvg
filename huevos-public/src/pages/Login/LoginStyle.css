@@ -1,0 +1,19 @@
+.gradient-bg-animation{
+  height:200px;
+  background: rgb(189, 189, 189);
+  background: linear-gradient(45deg, rgba(0, 253, 188, 1) 0%, rgba(19, 253, 75, 1) 0%, rgba(150,126,197,1) 48%, rgba(31, 253, 0, 1) 100%);
+  background-size: 300% 100%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}

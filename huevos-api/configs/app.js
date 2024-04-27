@@ -19,6 +19,7 @@ app.use(morgan('dev'));
 // PRODUCTION
 
 // DEVELOP
+app.use('/user', require('../src/user/user.routes'));
 
 /* ---- DEPLOYED SERVER ---- */
 exports.init_server = () => {
