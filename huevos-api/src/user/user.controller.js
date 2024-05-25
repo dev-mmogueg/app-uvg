@@ -4,7 +4,7 @@
 const User = require('./user.model');
 const File = require('../utils/file.controller');
 const { create_token } = require('../services/jwt');
-const { verify, encrypt, check } = require('../utils/validate');
+const { verify, encrypt, check, check_tk } = require('../utils/validate');
 
 /* ----- CREATE DEFAULT USER (ADMIN) ----- */
 exports.def_ = async () => {
@@ -111,10 +111,72 @@ exports.register = async (req, res) => {
     if (msg)
       return res.status(418).send(msg);
     const email_split = data['profile']['email'].split('@')[1].split('\.');
-    console.log(email_split);
+    if ('uvg' in email_split) {
+      data['profile']['role'] = 'user_p';
+      data['profile']['username'] = data['profile']['email'].split('@')[0];
+    }
+    else {
+      data['profile']['role'] = 'user_g';
+      data['profile']['username'] = '';
+    }
   } catch (err) {
     console.error(err);
     return res.status(500).send({ message: `ERROR REGISTER NEW USER` });
+  }
+}
+
+/* ----- GETS ----- */
+// One
+
+// All
+
+// File
+exports.get_file = async (req, res) => {
+  try {
+    const { qfi, qtk } = req.query;
+    const tk = check_tk(qtk);
+    if (!tk)
+      return res.status(400).send({ message: `Invalid Token` });
+    const data = await File.get(qfi);
+    res.setHeader('Content-Type', `${data.contentType}`);
+    return data.file.pipe(res);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: `ERROR FETTING FILE` });
+  }
+}
+
+/* --- UPLOAD --- */
+exports.upload = async (req, res) => {
+  try {
+    const { qui, qty } = req.query;
+    const file = req.files.file;
+    if (!file)
+      return res.status(400).send({ message: `Have not sent an file` });
+    const user = await User.findOne({
+      $and: [
+        { _id: qui },
+        { active: true }
+      ]
+    });
+    if (!user)
+      return res.status(404).send({ message: `User not found or not exist` });
+    const id_file = File.upload(file.path, file.type, qty);
+    if (!id_file)
+      return res.status(400).send({ message: `File extension is not supported` });
+    switch (qty) {
+      case 'i13fasgw': // Photo
+        if (user.createdAt.getTime() != user.updatedAt.getTime())
+          if (Date.now() < ((new Date(user.updatedAt).getTime()) + (1000 * 60 * 60 * 24 * 30)))
+            return res.status(400).send({ message: `Time has not passed to be able to modify the photo again` });
+        await User.updateOne({ _id: qui }, { 'profile.photo': id_file, updatedAt: new Date() }, { new: true });
+        return res.send({ message: `Photo added successfully` });
+      default:
+        return res.status(400).send({ message: `Non-existent field` });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: `ERROR ULOAD PHOTO` });
   }
 }
 

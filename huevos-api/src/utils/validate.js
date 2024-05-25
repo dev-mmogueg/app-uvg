@@ -1,6 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const mc = require('connect-multiparty');
 let msg = '';
 
@@ -12,6 +13,9 @@ exports.encrypt = (text = '') => bcrypt.hashSync(text, 10);
 
 /* --- CHECK --- */
 exports.check = (text = '', hash = '') => bcrypt.compareSync(text, hash);
+
+/* --- VERIFY TOKEN --- */
+exports.check_tk = (tk = '') => jwt.verify(tk, `${process.env.KEY_DECODE}`);
 
 /* --- VERIFY --- */
 exports.verify = (data = {}) => {

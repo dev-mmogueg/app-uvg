@@ -8,9 +8,13 @@ const { uploads } = require('../utils/validate');
 
 /* ----- ROUTES PRIVATE ----- */
 // --- @admin --- //
+api.get('/get-all', [ensureAdvance,]);
 
 // --- @global --- //
 api.get('/test', [ensureAdvance], userController.test_);
+api.get('/get-one/there*', [ensureAdvance],);
+api.get('/get-photo/there*', [uploads], userController.get_file);
+api.put('/upload-file/there*', [ensureAdvance, uploads], userController.upload);
 
 /* ----- ROUTES PUBLIC ----- */
 api.post('/login', userController.login);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../Index';
 
 /* --- IMPORT ICONs --- */
 import { TbMessageCircle, TbDeviceGamepad2 } from "react-icons/tb";
@@ -9,12 +10,15 @@ import { BiHomeAlt2 } from "react-icons/bi";
 
 export const TabBar = () => {
 
+  /* ---- CONTEXT ---- */
+  const { dataUser } = useAuthContext();
+
   const tabs = [
-    {
+    /* {
       icon: <GoGraph size={28} />,
       active: false,
       link: '/stadistics'
-    },
+    }, */
     {
       icon: <HiOutlineClipboardList size={28} />,
       active: false,
@@ -25,11 +29,11 @@ export const TabBar = () => {
       active: true,
       link: '/'
     },
-    {
+    /* {
       icon: <TbMessageCircle size={28} />,
       active: false,
       link: '/chat'
-    },
+    }, */
     {
       icon: <TbDeviceGamepad2 size={28} />,
       active: false,

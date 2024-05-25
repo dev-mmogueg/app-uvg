@@ -13,7 +13,7 @@ exports.upload = (path_file = '', content_type = '', type = '') => {
     const fs_file = fs.readFileSync(path_file);
     const file_split = path_file.split('\\');
     const name_file = file_split[(file_split.length - 1)];
-    const ext = name.split('\.')[1];
+    const ext = name_file.split('\.')[1];
     switch (type[0].toUpperCase()) {
       case 'I':
         if (!isImage(ext))
